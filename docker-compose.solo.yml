@@ -1,0 +1,33 @@
+version: '3.6'
+
+services:
+
+  vault:
+    build:
+      context: ./vault
+      dockerfile: Dockerfile
+    ports:
+      - 8200:8200
+    volumes:
+      - ./vault/vault_solo/config/vault_solo.json:/vault/config/vault_solo.json
+      - ./vault/vault_solo/policies:/vault/policies
+      - ./vault/vault_solo/data:/vault/data
+      - ./vault/vault_solo/logs:/vault/logs
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+    command: server -config=/vault/config/vault_solo.json
+    cap_add:
+      - IPC_LOCK
+    depends_on:
+      - consul
+
+  consul:
+    build:
+      context: ./consul
+      dockerfile: Dockerfile
+    ports:
+      - 8500:8500
+    command: agent -server -config-file=/consul/config/consul_solo.json
+    volumes:
+      - ./consul/consul_solo/config/consul_solo.json:/consul/config/consul_solo.json
+      - ./consul/consul_solo/data:/consul/data
