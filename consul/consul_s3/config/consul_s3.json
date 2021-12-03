@@ -1,0 +1,12 @@
+{
+  "server": true,
+  "node_name": "consul_s3",
+  "datacenter": "dc1",
+  "bind_addr": "0.0.0.0",
+  "client_addr": "0.0.0.0",
+  "bootstrap_expect": 3,
+  "data_dir": "/consul/data",
+  "retry_join": ["consul_s1", "consul_s2"],
+  "log_level": "DEBUG",
+  "ui": true
+}
