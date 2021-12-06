@@ -39,15 +39,23 @@ services:
     image: consul:1.10.4
     container_name: consul-c1
     restart: always
-    # ports:
-    #   - 8501:8500
     volumes:
       - ./consul/consul_c1/config/consul_c1.json:/consul/config/consul_c1.json:ro
     networks:
       - consul
     command: 'agent -config-file=/consul/config/consul_c1.json'
+
+  consul_c2:
+    image: consul:1.10.4
+    container_name: consul-c2
+    restart: always
+    volumes:
+      - ./consul/consul_c2/config/consul_c2.json:/consul/config/consul_c2.json:ro
+    networks:
+      - consul
+    command: 'agent -config-file=/consul/config/consul_c2.json'
     
-  vault:
+  vault_s1:
     image: vault:latest
     container_name: vault_s1
     ports:
@@ -67,6 +75,27 @@ services:
       - IPC_LOCK
     depends_on:
       - consul_c1
+
+  vault_s2:
+    image: vault:latest
+    container_name: vault_s2
+    # ports:
+    #   - 8200:8200
+    volumes:
+      - ./vault/vault_s2/config/vault_s2.json:/vault/config/vault_s2.json
+      - ./vault/vault_s2/policies:/vault/policies
+      - ./vault/vault_s2/data:/vault/data
+      - ./vault/vault_s2/logs:/vault/logs
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_API_ADDR=http://127.0.0.1:8200
+    networks:
+      - consul
+    command: server
+    cap_add:
+      - IPC_LOCK
+    depends_on:
+      - consul_c2
 
 networks:
   consul:
