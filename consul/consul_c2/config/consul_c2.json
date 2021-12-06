@@ -1,0 +1,8 @@
+{
+  "node_name": "consul-c2",
+  "datacenter": "dc1",
+  "bind_addr": "0.0.0.0",
+  "client_addr": "0.0.0.0",
+  "retry_join": ["consul_s1", "consul_s2", "consul_s3"],
+  "data_dir": "/consul/data"
+}
