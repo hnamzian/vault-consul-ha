@@ -58,8 +58,8 @@ services:
   vault_s1:
     image: vault:latest
     container_name: vault_s1
-    ports:
-      - 8200:8200
+    # ports:
+    #   - 8200:8200
     volumes:
       - ./vault/vault_s1/config/vault_s1.json:/vault/config/vault_s1.json
       - ./vault/vault_s1/policies:/vault/policies
@@ -79,8 +79,6 @@ services:
   vault_s2:
     image: vault:latest
     container_name: vault_s2
-    # ports:
-    #   - 8200:8200
     volumes:
       - ./vault/vault_s2/config/vault_s2.json:/vault/config/vault_s2.json
       - ./vault/vault_s2/policies:/vault/policies
@@ -96,6 +94,17 @@ services:
       - IPC_LOCK
     depends_on:
       - consul_c2
+
+  haproxy:
+    image: haproxy:1.7
+    container_name: haproxy
+    volumes:
+        - ./haproxy:/haproxy-override
+        - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+        - 8200:80
+    networks:
+      - consul
 
 networks:
   consul:
